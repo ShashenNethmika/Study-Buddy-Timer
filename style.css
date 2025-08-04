@@ -1,0 +1,91 @@
+body {
+    font-family: 'Lato', sans-serif; /* Changed font-family to Lato */
+    overflow: hidden; /* Prevent scrollbars if animation goes slightly out of bounds */
+}
+.timer-circle {
+    transform: rotate(-90deg);
+}
+/* Smooth transition for theme changes */
+.transition-colors-background {
+    transition: background-color 0.5s ease;
+}
+.transition-colors-text {
+    transition: color 0.5s ease;
+}
+.transition-colors-stroke {
+    transition: stroke 0.5s ease;
+}
+.transition-colors-fill {
+    transition: fill 0.5s ease;
+}
+/* Custom checkbox style */
+.toggle-checkbox:checked {
+    right: 0;
+    border-color: #4ade80; /* green-400 */
+}
+.toggle-checkbox:checked + .toggle-label {
+    background-color: #4ade80; /* green-400 */
+}
+/* Active button styling */
+.mode-button.active {
+    border: 2px solid white; /* Add a white border to active button */
+}
+/* Custom color picker styling to make it round */
+#custom-color-picker {
+    -webkit-appearance: none; /* For Chrome, Safari, Opera */
+    -moz-appearance: none;    /* For Firefox */
+    appearance: none;         /* Standard property */
+    border: none;             /* Remove default border */
+    width: 32px;              /* Tailwind w-8 */
+    height: 32px;             /* Tailwind h-8 */
+    border-radius: 9999px;    /* Tailwind rounded-full */
+    cursor: pointer;
+    padding: 0;               /* Remove default padding */
+    background-color: transparent; /* Ensure background is transparent to show chosen color */
+    overflow: hidden;         /* Hide any default square overflow */
+}
+/* Style for the color picker's inner box (if it appears) */
+#custom-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+#custom-color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 9999px; /* Make the actual color swatch round */
+}
+#custom-color-picker::-moz-color-swatch-wrapper {
+    padding: 0;
+}
+#custom-color-picker::-moz-color-swatch {
+    border: none;
+    border-radius: 9999px; /* Make the actual color swatch round */
+}
+
+/* Background animation for the book icon - now centered within the timer display */
+#background-icon {
+    position: absolute; /* Position relative to its parent .relative.w-64.h-64 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centering trick */
+    width: 30%; /* Adjusted to be responsive */
+    max-width: 80px; /* Max size to prevent it from getting too large */
+    height: auto;
+    opacity: 0.4; /* Increased opacity for better visibility */
+    animation: floatAndFade 10s ease-in-out infinite alternate; /* Subtle floating animation */
+    z-index: 0; /* Behind time display (z-index: 10) */
+    color: #FFFFFF; /* Changed to white */
+}
+
+@keyframes floatAndFade {
+    0% {
+        transform: translate(-50%, -50%) translateY(0px) scale(1);
+        opacity: 0.4; /* Increased opacity */
+    }
+    50% {
+        transform: translate(-50%, -50%) translateY(-10px) scale(1.02);
+        opacity: 0.5; /* Slightly higher opacity at peak float */
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(0px) scale(1);
+        opacity: 0.4; /* Increased opacity */
+    }
+}
