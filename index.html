@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Buddy Timer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-900 text-white flex items-center justify-center min-h-screen antialiased transition-colors-background">
+
+    <div class="w-full max-w-md mx-auto p-6 md:p-8 bg-slate-800 rounded-2xl shadow-2xl text-center transition-colors-background">
+
+        <div class="flex justify-center items-center gap-3 mb-4">
+            <span class="text-sm text-slate-400">Theme:</span>
+            <button onclick="applyTheme('forest-green')" class="w-6 h-6 rounded-full bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
+            <button onclick="applyTheme('ocean-blue')" class="w-6 h-6 rounded-full bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
+            <button onclick="applyTheme('desert-sunset')" class="w-6 h-6 rounded-full bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
+            <input type="color" id="custom-color-picker" class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white">
+        </div>
+
+        <h1 id="main-header" class="text-3xl font-bold text-lime-400 mb-2 transition-colors-text">Study Buddy Timer</h1>
+        <p id="mode-indicator" class="text-slate-400 mb-6">Choose a mode to begin</p>
+
+        <div class="relative w-64 h-64 mx-auto mb-6 flex items-center justify-center">
+            <svg class="absolute w-full h-full" viewBox="0 0 100 100">
+                <circle class="text-slate-700" stroke-width="7" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                <circle id="progress-ring"
+                        class="text-lime-400 timer-circle transition-colors-stroke"
+                        stroke-width="7"
+                        stroke-dasharray="283"
+                        stroke-dashoffset="283"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="45"
+                        cx="50"
+                        cy="50"
+                        style="transition: stroke-dashoffset 0.5s linear;" />
+            </svg>
+            <svg id="background-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 0 0 5H20"/>
+            </svg>
+            <div id="time-display" class="text-6xl font-bold z-10 text-lime-400 transition-colors-text">25:00</div>
+        </div>
+
+        <div id="mode-buttons" class="flex justify-center gap-2 mb-6">
+            <button id="study-btn" onclick="setTimer(25 * 60, 'Study Focus', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors-background">
+                Study
+            </button>
+            <button id="short-break-btn" onclick="setTimer(5 * 60, 'Short Break', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                Short Break
+            </button>
+            <button id="long-break-btn" onclick="setTimer(15 * 60, 'Long Break', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                Long Break
+            </button>
+        </div>
+
+        <div class="flex justify-center gap-4">
+            <button id="start-pause-btn" onclick="toggleTimer()" class="flex-1 flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <svg id="start-pause-icon" class="w-6 h-6 transition-colors-fill" fill="currentColor" viewBox="0 0 20 20"></svg>
+                <span id="start-pause-text">Start</span>
+            </button>
+            <button id="reset-btn" onclick="resetTimer()" class="flex-1 flex items-center justify-center gap-2 bg-red-700 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0120.5 10M20 20l-1.5-1.5A9 9 0 003.5 14"></path></svg>
+                <span>Reset</span>
+            </button>
+        </div>
+        
+        <div class="mt-6 flex justify-between items-center text-slate-400">
+             <div class="flex items-center gap-2">
+                <label for="auto-continue-toggle" class="text-sm cursor-pointer">Auto-continue</label>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" id="auto-continue-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                    <label for="auto-continue-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                </div>
+            </div>
+            <div id="session-counter" class="text-sm">Sessions: 0</div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
