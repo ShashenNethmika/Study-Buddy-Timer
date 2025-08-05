@@ -1,6 +1,6 @@
 body {
     font-family: 'Lato', sans-serif;
-    
+    overflow-x: hidden; /* තිරස් අනුචලනය පමණක් වළක්වයි */
 }
 .timer-circle {
     transform: rotate(-90deg);
