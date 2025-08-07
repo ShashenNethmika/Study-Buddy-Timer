@@ -11,6 +11,8 @@ const modeButtons = document.querySelectorAll('.mode-button'); // Select all mod
 const sessionCounterDisplay = document.getElementById('session-counter');
 const autoContinueToggle = document.getElementById('auto-continue-toggle');
 const customColorPicker = document.getElementById('custom-color-picker'); // New DOM element
+const studyTopicInput = document.getElementById('study-topic-input');
+const studyTopicDisplay = document.getElementById('study-topic-display');
 
 // --- Icon SVGs ---
 const playIcon = `<path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.647c1.295.748 1.295 2.538 0 3.286L7.279 20.99c-1.25.72-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />`;
@@ -152,6 +154,15 @@ function setTimer(seconds, modeName, clickedButton) {
     startPauseBtn.disabled = false;
     resetBtn.disabled = false;
 
+    // Show or hide the study topic input based on the mode
+    if (modeName === 'Study Focus') {
+        studyTopicInput.classList.remove('hidden');
+        studyTopicDisplay.classList.add('hidden'); // Hide display when setting a new study session
+    } else {
+        studyTopicInput.classList.add('hidden');
+        studyTopicDisplay.classList.add('hidden');
+    }
+
     // Remove active class from all buttons
     modeButtons.forEach(button => {
         button.classList.remove('active');
@@ -172,6 +183,20 @@ function startTimer() {
     isRunning = true;
     startPauseText.textContent = 'Pause';
     startPauseIcon.innerHTML = pauseIcon;
+
+    // Handle study topic display
+    if (currentMode === 'Study Focus') {
+        const topic = studyTopicInput.value.trim();
+        if (topic) {
+            studyTopicDisplay.textContent = `Studying: ${topic}`;
+            studyTopicDisplay.classList.remove('hidden');
+            studyTopicInput.classList.add('hidden');
+        } else {
+            // If no topic is entered, just hide the input
+            studyTopicInput.classList.add('hidden');
+            studyTopicDisplay.classList.add('hidden');
+        }
+    }
     
     timerInterval = setInterval(() => {
         remainingSeconds--;
@@ -196,6 +221,12 @@ function resetTimer(clearMode = true) {
     updateDisplay();
     startPauseText.textContent = 'Start';
     startPauseIcon.innerHTML = playIcon;
+
+    // Also reset study topic elements
+    studyTopicInput.classList.add('hidden');
+    studyTopicDisplay.classList.add('hidden');
+    studyTopicInput.value = ''; // Clear the input field
+
     if (clearMode) {
         modeIndicator.textContent = 'Choose a mode to begin';
         startPauseBtn.disabled = true;
@@ -220,6 +251,7 @@ function completeSession() {
     if (wasStudySession) {
         sessionCount++;
         updateSessionCounter();
+        studyTopicDisplay.classList.add('hidden'); // Hide topic after study session
     }
 
     if (autoContinueToggle.checked) {

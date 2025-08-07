@@ -57,6 +57,12 @@
             </button>
         </div>
 
+        <!-- Container for Study Topic Input and Display -->
+        <div id="study-topic-container" class="mb-4">
+            <input type="text" id="study-topic-input" placeholder="What are you studying?" class="w-full bg-slate-700 text-white placeholder-slate-400 p-2 rounded-lg text-center hidden">
+            <div id="study-topic-display" class="text-slate-300 text-lg hidden"></div>
+        </div>
+
         <div class="flex justify-center gap-4">
             <button id="start-pause-btn" onclick="toggleTimer()" class="flex-1 flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                 <svg id="start-pause-icon" class="w-6 h-6 transition-colors-fill" fill="currentColor" viewBox="0 0 20 20"></svg>
