@@ -29,6 +29,16 @@ body {
 .mode-button.active {
     border: 2px solid white; /* Add a white border to active button */
 }
+
+/* Utility class to hide elements */
+.hidden {
+    display: none;
+}
+
+#study-topic-display {
+    font-weight: bold;
+    padding: 0.5rem;
+}
 /* Custom color picker styling to make it round */
 #custom-color-picker {
     -webkit-appearance: none; /* For Chrome, Safari, Opera */
