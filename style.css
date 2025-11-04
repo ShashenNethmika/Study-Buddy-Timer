@@ -1,3 +1,4 @@
+/* existing styles */
 body {
     font-family: 'Lato', sans-serif;
 }
@@ -98,3 +99,14 @@ body {
         opacity: 0.4; /* Increased opacity */
     }
 }
+
+/* Tabs */
+.tab-button { color: #cbd5e1; }
+.tab-button.active { background: #334155; color: #fff; font-weight: 700; }
+.tab-content.hidden { display:none; }
+
+/* Tasks */
+.task-item { display:flex; align-items:center; gap:.5rem; background:#334155; padding:.5rem .75rem; border-radius:.5rem; }
+.task-title { flex:1; }
+.task-title.done { text-decoration: line-through; color:#94a3b8; }
+.task-actions button { font-size:.85rem; }
