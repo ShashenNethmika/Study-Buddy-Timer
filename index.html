@@ -6,83 +6,244 @@
     <title>Study Buddy Timer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-900 text-white min-h-screen antialiased transition-colors-background">
 
+    <!-- Main Timer Container -->
     <div class="w-full max-w-md mx-auto p-6 md:p-8 bg-slate-800 rounded-2xl shadow-2xl text-center transition-colors-background overflow-hidden">
 
-        <div class="flex justify-center items-center gap-3 mb-4">
-            <span class="text-sm text-slate-400">Theme:</span>
-            <button onclick="applyTheme('forest-green')" class="w-6 h-6 rounded-full bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
-            <button onclick="applyTheme('ocean-blue')" class="w-6 h-6 rounded-full bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
-            <button onclick="applyTheme('desert-sunset')" class="w-6 h-6 rounded-full bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
-            <input type="color" id="custom-color-picker" class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white">
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center mb-4 bg-slate-700 rounded-lg p-1">
+            <button onclick="showTab('timer')" id="timer-tab" class="tab-button flex-1 py-2 px-4 rounded-md transition-colors active">Timer</button>
+            <button onclick="showTab('tasks')" id="tasks-tab" class="tab-button flex-1 py-2 px-4 rounded-md transition-colors">Tasks</button>
+            <button onclick="showTab('stats')" id="stats-tab" class="tab-button flex-1 py-2 px-4 rounded-md transition-colors">Stats</button>
+            <button onclick="showTab('settings')" id="settings-tab" class="tab-button flex-1 py-2 px-4 rounded-md transition-colors">Settings</button>
         </div>
 
-        <h1 id="main-header" class="text-3xl font-bold text-lime-400 mb-2 transition-colors-text">Study Buddy Timer</h1>
-        <p id="mode-indicator" class="text-slate-400 mb-6">Choose a mode to begin</p>
+        <!-- Timer Tab -->
+        <div id="timer-content" class="tab-content">
+            <div class="flex justify-center items-center gap-3 mb-4">
+                <span class="text-sm text-slate-400">Theme:</span>
+                <button onclick="applyTheme('forest-green')" class="w-6 h-6 rounded-full bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
+                <button onclick="applyTheme('ocean-blue')" class="w-6 h-6 rounded-full bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
+                <button onclick="applyTheme('desert-sunset')" class="w-6 h-6 rounded-full bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"></button>
+                <input type="color" id="custom-color-picker" class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white">
+            </div>
 
-        <div class="relative w-64 h-64 mx-auto mb-6 flex items-center justify-center">
-            <svg class="absolute w-full h-full" viewBox="0 0 100 100">
-                <circle class="text-slate-700" stroke-width="7" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
-                <circle id="progress-ring"
-                        class="text-lime-400 timer-circle transition-colors-stroke"
-                        stroke-width="7"
-                        stroke-dasharray="283"
-                        stroke-dashoffset="283"
-                        stroke="currentColor"
-                        fill="transparent"
-                        r="45"
-                        cx="50"
-                        cy="50"
-                        style="transition: stroke-dashoffset 0.5s linear;" />
-            </svg>
-            <svg id="background-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 0 0 5H20"/>
-            </svg>
-            <div id="time-display" class="text-6xl font-bold z-10 text-lime-400 transition-colors-text">25:00</div>
+            <h1 id="main-header" class="text-3xl font-bold text-lime-400 mb-2 transition-colors-text">Study Buddy Timer</h1>
+            <p id="mode-indicator" class="text-slate-400 mb-6">Choose a mode to begin</p>
+
+            <!-- Daily Goal Progress -->
+            <div id="goal-progress" class="mb-4 hidden">
+                <div class="text-sm text-slate-400 mb-2">Daily Goal Progress</div>
+                <div class="w-full bg-slate-700 rounded-full h-2">
+                    <div id="goal-progress-bar" class="bg-lime-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div id="goal-text" class="text-xs text-slate-400 mt-1">0 / 4 sessions</div>
+            </div>
+
+            <div class="relative w-64 h-64 mx-auto mb-6 flex items-center justify-center">
+                <svg class="absolute w-full h-full" viewBox="0 0 100 100">
+                    <circle class="text-slate-700" stroke-width="7" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                    <circle id="progress-ring"
+                            class="text-lime-400 timer-circle transition-colors-stroke"
+                            stroke-width="7"
+                            stroke-dasharray="283"
+                            stroke-dashoffset="283"
+                            stroke="currentColor"
+                            fill="transparent"
+                            r="45"
+                            cx="50"
+                            cy="50"
+                            style="transition: stroke-dashoffset 0.5s linear;" />
+                </svg>
+                <svg id="background-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 0 0 5H20"/>
+                </svg>
+                <div id="time-display" class="text-6xl font-bold z-10 text-lime-400 transition-colors-text">25:00</div>
+            </div>
+
+            <div id="mode-buttons" class="flex justify-center gap-2 mb-6">
+                <button id="study-btn" onclick="setTimer(25 * 60, 'Study Focus', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors-background">
+                    Study
+                </button>
+                <button id="short-break-btn" onclick="setTimer(5 * 60, 'Short Break', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                    Short Break
+                </button>
+                <button id="long-break-btn" onclick="setTimer(15 * 60, 'Long Break', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                    Long Break
+                </button>
+            </div>
+
+            <!-- Container for Study Topic Input and Display -->
+            <div id="study-topic-container" class="mb-4">
+                <input type="text" id="study-topic-input" placeholder="What are you studying?" class="w-full bg-slate-700 text-white placeholder-slate-400 p-2 rounded-lg text-center hidden">
+                <div id="study-topic-display" class="text-slate-300 text-lg hidden"></div>
+            </div>
+
+            <!-- Current Task Display -->
+            <div id="current-task-display" class="mb-4 hidden">
+                <div class="text-sm text-slate-400 mb-1">Current Task:</div>
+                <div id="current-task-text" class="text-lime-400 font-semibold"></div>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <button id="start-pause-btn" onclick="toggleTimer()" class="flex-1 flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <svg id="start-pause-icon" class="w-6 h-6 transition-colors-fill" fill="currentColor" viewBox="0 0 20 20"></svg>
+                    <span id="start-pause-text">Start</span>
+                </button>
+                <button id="reset-btn" onclick="resetTimer()" class="flex-1 flex items-center justify-center gap-2 bg-red-700 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0120.5 10M20 20l-1.5-1.5A9 9 0 003.5 14"></path></svg>
+                    <span>Reset</span>
+                </button>
+            </div>
+            
+            <div class="mt-6 flex justify-between items-center text-slate-400">
+                 <div class="flex items-center gap-2">
+                    <label for="auto-continue-toggle" class="text-sm cursor-pointer">Auto-continue</label>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" id="auto-continue-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                        <label for="auto-continue-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                    </div>
+                </div>
+                <div id="session-counter" class="text-sm">Sessions: 0</div>
+            </div>
+
+            <!-- Motivational Quote Display -->
+            <div id="quote-display" class="mt-4 p-3 bg-slate-700 rounded-lg hidden">
+                <div id="quote-text" class="text-sm italic text-slate-300 mb-1"></div>
+                <div id="quote-author" class="text-xs text-slate-400"></div>
+            </div>
         </div>
 
-        <div id="mode-buttons" class="flex justify-center gap-2 mb-6">
-            <button id="study-btn" onclick="setTimer(25 * 60, 'Study Focus', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors-background">
-                Study
-            </button>
-            <button id="short-break-btn" onclick="setTimer(5 * 60, 'Short Break', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
-                Short Break
-            </button>
-            <button id="long-break-btn" onclick="setTimer(15 * 60, 'Long Break', this)" class="mode-button flex-1 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
-                Long Break
-            </button>
-        </div>
-
-        <!-- Container for Study Topic Input and Display -->
-        <div id="study-topic-container" class="mb-4">
-            <input type="text" id="study-topic-input" placeholder="What are you studying?" class="w-full bg-slate-700 text-white placeholder-slate-400 p-2 rounded-lg text-center hidden">
-            <div id="study-topic-display" class="text-slate-300 text-lg hidden"></div>
-        </div>
-
-        <div class="flex justify-center gap-4">
-            <button id="start-pause-btn" onclick="toggleTimer()" class="flex-1 flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                <svg id="start-pause-icon" class="w-6 h-6 transition-colors-fill" fill="currentColor" viewBox="0 0 20 20"></svg>
-                <span id="start-pause-text">Start</span>
-            </button>
-            <button id="reset-btn" onclick="resetTimer()" class="flex-1 flex items-center justify-center gap-2 bg-red-700 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 4l1.5 1.5A9 9 0 0120.5 10M20 20l-1.5-1.5A9 9 0 003.5 14"></path></svg>
-                <span>Reset</span>
-            </button>
-        </div>
-        
-        <div class="mt-6 flex justify-between items-center text-slate-400">
-             <div class="flex items-center gap-2">
-                <label for="auto-continue-toggle" class="text-sm cursor-pointer">Auto-continue</label>
-                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" id="auto-continue-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                    <label for="auto-continue-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+        <!-- Tasks Tab -->
+        <div id="tasks-content" class="tab-content hidden">
+            <h2 class="text-2xl font-bold text-lime-400 mb-4">Study Tasks</h2>
+            
+            <div class="mb-4">
+                <div class="flex gap-2">
+                    <input type="text" id="new-task-input" placeholder="Add a new task..." class="flex-1 bg-slate-700 text-white placeholder-slate-400 p-2 rounded-lg">
+                    <button onclick="addTask()" class="bg-lime-600 hover:bg-lime-500 text-white px-4 py-2 rounded-lg transition-colors">
+                        Add
+                    </button>
                 </div>
             </div>
-            <div id="session-counter" class="text-sm">Sessions: 0</div>
+
+            <div id="tasks-list" class="space-y-2">
+                <!-- Tasks will be dynamically added here -->
+            </div>
+
+            <div class="mt-4 text-center text-slate-400 text-sm">
+                <span id="tasks-completed">0</span> / <span id="tasks-total">0</span> tasks completed
+            </div>
+        </div>
+
+        <!-- Statistics Tab -->
+        <div id="stats-content" class="tab-content hidden">
+            <h2 class="text-2xl font-bold text-lime-400 mb-4">Statistics</h2>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-700 p-3 rounded-lg">
+                    <div class="text-2xl font-bold text-lime-400" id="total-sessions">0</div>
+                    <div class="text-sm text-slate-400">Total Sessions</div>
+                </div>
+                <div class="bg-slate-700 p-3 rounded-lg">
+                    <div class="text-2xl font-bold text-lime-400" id="total-time">0h 0m</div>
+                    <div class="text-sm text-slate-400">Study Time</div>
+                </div>
+                <div class="bg-slate-700 p-3 rounded-lg">
+                    <div class="text-2xl font-bold text-lime-400" id="current-streak">0</div>
+                    <div class="text-sm text-slate-400">Day Streak</div>
+                </div>
+                <div class="bg-slate-700 p-3 rounded-lg">
+                    <div class="text-2xl font-bold text-lime-400" id="completion-rate">0%</div>
+                    <div class="text-sm text-slate-400">Completion Rate</div>
+                </div>
+            </div>
+
+            <div class="bg-slate-700 p-4 rounded-lg">
+                <h3 class="text-lg font-semibold mb-3">Weekly Progress</h3>
+                <canvas id="weekly-chart" width="300" height="150"></canvas>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-content" class="tab-content hidden">
+            <h2 class="text-2xl font-bold text-lime-400 mb-4">Settings</h2>
+            
+            <!-- Daily Goal Setting -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-300 mb-2">Daily Goal (Sessions)</label>
+                <input type="range" id="daily-goal-slider" min="1" max="12" value="4" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>1</span>
+                    <span id="goal-value">4</span>
+                    <span>12</span>
+                </div>
+            </div>
+
+            <!-- Sound Settings -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-300 mb-2">Notification Sound</label>
+                <select id="notification-sound" class="w-full bg-slate-700 text-white p-2 rounded-lg">
+                    <option value="beep">Beep</option>
+                    <option value="chime">Chime</option>
+                    <option value="bell">Bell</option>
+                    <option value="nature">Nature Sound</option>
+                </select>
+            </div>
+
+            <!-- Volume Control -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-300 mb-2">Volume</label>
+                <input type="range" id="volume-slider" min="0" max="100" value="50" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>0%</span>
+                    <span id="volume-value">50%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <!-- Background Sounds -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-300 mb-2">Background Sound</label>
+                <select id="background-sound" class="w-full bg-slate-700 text-white p-2 rounded-lg">
+                    <option value="none">None</option>
+                    <option value="rain">Rain</option>
+                    <option value="forest">Forest</option>
+                    <option value="ocean">Ocean Waves</option>
+                    <option value="cafe">Cafe Ambience</option>
+                </select>
+            </div>
+
+            <!-- Timer Customization -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-300 mb-2">Custom Timer Durations</label>
+                <div class="grid grid-cols-3 gap-2 text-sm">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Study (min)</label>
+                        <input type="number" id="custom-study" min="1" max="60" value="25" class="w-full bg-slate-700 text-white p-1 rounded text-center">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Short Break</label>
+                        <input type="number" id="custom-short" min="1" max="30" value="5" class="w-full bg-slate-700 text-white p-1 rounded text-center">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">Long Break</label>
+                        <input type="number" id="custom-long" min="1" max="60" value="15" class="w-full bg-slate-700 text-white p-1 rounded text-center">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reset Data -->
+            <div class="mb-4">
+                <button onclick="resetAllData()" class="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    Reset All Data
+                </button>
+            </div>
         </div>
 
     </div>
